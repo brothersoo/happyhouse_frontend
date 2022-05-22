@@ -9,6 +9,7 @@
     "dev": "npm run serve"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "bootstrap": "4.6.0",
     "bootstrap-vue": "^2.22.0",
