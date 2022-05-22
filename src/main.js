@@ -20,6 +20,8 @@ import App from './App.vue';
 
 // router setup
 import router from './routes/router';
+// vuex setup
+import store from './store';
 // plugin setup
 Vue.use(DashboardPlugin);
 
@@ -27,5 +29,6 @@ Vue.use(DashboardPlugin);
 new Vue({
   el: '#app',
   render: h => h(App),
-  router
+  router,
+  store,
 });

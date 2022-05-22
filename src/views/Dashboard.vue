@@ -1,16 +1,16 @@
 <template>
   <div>
-
     <base-header class="pb-6 pb-8 pt-5 pt-md-8 bg-gradient-success">
       <!-- Card stats -->
       <b-row>
         <b-col xl="3" md="6">
-          <stats-card title="Total traffic"
-                      type="gradient-red"
-                      sub-title="350,897"
-                      icon="ni ni-active-40"
-                      class="mb-4">
-
+          <stats-card
+            title="Total traffic"
+            type="gradient-red"
+            sub-title="350,897"
+            icon="ni ni-active-40"
+            class="mb-4"
+          >
             <template slot="footer">
               <span class="text-success mr-2">3.48%</span>
               <span class="text-nowrap">Since last month</span>
@@ -18,12 +18,13 @@
           </stats-card>
         </b-col>
         <b-col xl="3" md="6">
-          <stats-card title="Total traffic"
-                      type="gradient-orange"
-                      sub-title="2,356"
-                      icon="ni ni-chart-pie-35"
-                      class="mb-4">
-
+          <stats-card
+            title="Total traffic"
+            type="gradient-orange"
+            sub-title="2,356"
+            icon="ni ni-chart-pie-35"
+            class="mb-4"
+          >
             <template slot="footer">
               <span class="text-success mr-2">12.18%</span>
               <span class="text-nowrap">Since last month</span>
@@ -31,26 +32,27 @@
           </stats-card>
         </b-col>
         <b-col xl="3" md="6">
-          <stats-card title="Sales"
-                      type="gradient-green"
-                      sub-title="924"
-                      icon="ni ni-money-coins"
-                      class="mb-4">
-
+          <stats-card
+            title="Sales"
+            type="gradient-green"
+            sub-title="924"
+            icon="ni ni-money-coins"
+            class="mb-4"
+          >
             <template slot="footer">
               <span class="text-danger mr-2">5.72%</span>
               <span class="text-nowrap">Since last month</span>
             </template>
           </stats-card>
-
         </b-col>
         <b-col xl="3" md="6">
-          <stats-card title="Performance"
-                      type="gradient-info"
-                      sub-title="49,65%"
-                      icon="ni ni-chart-bar-32"
-                      class="mb-4">
-
+          <stats-card
+            title="Performance"
+            type="gradient-info"
+            sub-title="49,65%"
+            icon="ni ni-chart-bar-32"
+            class="mb-4"
+          >
             <template slot="footer">
               <span class="text-success mr-2">54.8%</span>
               <span class="text-nowrap">Since last month</span>
@@ -58,6 +60,13 @@
           </stats-card>
         </b-col>
       </b-row>
+      <!-- Card stats end -->
+
+      <!-- Area dropdown selector -->
+      <b-row>
+        <house-deal></house-deal>
+      </b-row>
+      <!-- Area dropdown selector end-->
     </base-header>
 
     <!--Charts-->
@@ -68,25 +77,26 @@
             <b-row align-v="center" slot="header">
               <b-col>
                 <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6>
-                <h5 class="h3 text-white mb-0">Sales value</h5>
+                <h5 class="h3 text-white mb-0">{{ bigLineChartLabel }}</h5>
               </b-col>
               <b-col>
                 <b-nav class="nav-pills justify-content-end">
                   <b-nav-item
-                       class="mr-2 mr-md-0"
-                       :active="bigLineChart.activeIndex === 0"
-                       link-classes="py-2 px-3"
-                       @click.prevent="initBigChart(0)">
-                      <span class="d-none d-md-block">Month</span>
-                      <span class="d-md-none">M</span>
+                    class="mr-2 mr-md-0"
+                    :active="bigLineChart.type === 'year'"
+                    link-classes="py-2 px-3"
+                    @click="changeDateType('year')"
+                  >
+                    <span class="d-none d-md-block">Year</span>
+                    <span class="d-md-none">Y</span>
                   </b-nav-item>
                   <b-nav-item
                     link-classes="py-2 px-3"
-                    :active="bigLineChart.activeIndex === 1"
-                    @click.prevent="initBigChart(1)"
+                    :active="bigLineChart.type === 'month'"
+                    @click="changeDateType('month')"
                   >
-                    <span class="d-none d-md-block">Week</span>
-                    <span class="d-md-none">W</span>
+                    <span class="d-none d-md-block">Month</span>
+                    <span class="d-md-none">M</span>
                   </b-nav-item>
                 </b-nav>
               </b-col>
@@ -132,85 +142,73 @@
       </b-row>
       <!--End tables-->
     </b-container>
-
   </div>
 </template>
 <script>
-  // Charts
-  import * as chartConfigs from '@/components/Charts/config';
-  import LineChart from '@/components/Charts/LineChart';
-  import BarChart from '@/components/Charts/BarChart';
+import { mapState, mapActions, mapGetters } from "vuex";
 
-  // Components
-  import BaseProgress from '@/components/BaseProgress';
-  import StatsCard from '@/components/Cards/StatsCard';
+// Area
+import HouseDeal from "@/components/Condition/HouseDeal";
 
-  // Tables
-  import SocialTrafficTable from './Dashboard/SocialTrafficTable';
-  import PageVisitsTable from './Dashboard/PageVisitsTable';
+// Charts
+import * as chartConfigs from "@/components/Charts/config";
+import LineChart from "@/components/Charts/LineChart";
+import BarChart from "@/components/Charts/BarChart";
 
-  export default {
-    components: {
-      LineChart,
-      BarChart,
-      BaseProgress,
-      StatsCard,
-      PageVisitsTable,
-      SocialTrafficTable
-    },
-    data() {
-      return {
-        bigLineChart: {
-          allData: [
-            [0, 20, 10, 30, 15, 40, 20, 60, 60],
-            [0, 20, 5, 25, 10, 30, 15, 40, 40]
-          ],
-          activeIndex: 0,
-          chartData: {
-            datasets: [
-              {
-                label: 'Performance',
-                data: [0, 20, 10, 30, 15, 40, 20, 60, 60],
-              }
-            ],
-            labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          },
-          extraOptions: chartConfigs.blueChartOptions,
-        },
-        redBarChart: {
-          chartData: {
-            labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-              label: 'Sales',
-              data: [25, 20, 30, 22, 17, 29]
-            }]
-          },
-          extraOptions: chartConfigs.blueChartOptions
-        }
-      };
-    },
-    methods: {
-      initBigChart(index) {
-        let chartData = {
+// Components
+import BaseProgress from "@/components/BaseProgress";
+import StatsCard from "@/components/Cards/StatsCard";
+
+// Tables
+import SocialTrafficTable from "./Dashboard/SocialTrafficTable";
+import PageVisitsTable from "./Dashboard/PageVisitsTable";
+
+export default {
+  components: {
+    LineChart,
+    BarChart,
+    BaseProgress,
+    StatsCard,
+    PageVisitsTable,
+    SocialTrafficTable,
+    HouseDeal,
+  },
+  data() {
+    return {
+      redBarChart: {
+        chartData: {
+          labels: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
           datasets: [
             {
-              label: 'Performance',
-              data: this.bigLineChart.allData[index]
-            }
+              label: "Sales",
+              data: [25, 20, 30, 22, 17, 29],
+            },
           ],
-          labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        };
-        this.bigLineChart.chartData = chartData;
-        this.bigLineChart.activeIndex = index;
+        },
+        extraOptions: chartConfigs.blueChartOptions,
+      },
+    };
+  },
+  computed: {
+    ...mapState(["bigLineChart"]),
+    ...mapGetters(["bigLineChartLabel"]),
+  },
+  methods: {
+    ...mapActions(["setBigLineChart", "setType"]),
+    changeDateType(type) {
+      if (this.bigLineChart.type !== type) {
+        this.setType(type);
+        this.setBigLineChart();
       }
     },
-    mounted() {
-      this.initBigChart(0);
-    }
-  };
+    initBigChart() {
+      this.setBigLineChart();
+    },
+  },
+};
 </script>
 <style>
-.el-table .cell{
+.el-table .cell {
   padding-left: 0px;
   padding-right: 0px;
 }
