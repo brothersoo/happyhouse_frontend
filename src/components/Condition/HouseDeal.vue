@@ -69,7 +69,13 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["sidos", "siguguns", "upmyundongs", "houses"]),
+    ...mapState([
+      "sidos",
+      "siguguns",
+      "upmyundongs",
+      "houses",
+      "selectedHouses",
+    ]),
     sido: {
       get() {
         return this.$store.state.sido;
@@ -126,6 +132,9 @@ export default {
       "setUpmyundongs",
       "setHouses",
       "setBigLineChart",
+      "addSelectedHouse",
+      "houseSelectNumberLimitAlert",
+      "alreadySelectedHouseAlert",
     ]),
     sidoSelected() {
       console.log("sido selected", this.sido.code);
@@ -141,10 +150,22 @@ export default {
     },
     houseSelected() {
       console.log("house selected");
+      if (this.selectedHouses.length < 5) {
+        for (let selectedHouse of this.selectedHouses) {
+          if (selectedHouse.id === this.house.id) {
+            this.alreadySelectedHouseAlert();
+            return;
+          }
+        }
+        this.addSelectedHouse();
+      } else {
+        this.houseSelectNumberLimitAlert();
+      }
     },
     initBigChart() {
       this.setBigLineChart();
     },
+    downloadDealData() {},
   },
   created() {
     this.setSidos();
