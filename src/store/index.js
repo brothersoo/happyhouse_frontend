@@ -48,6 +48,7 @@ export default new Vuex.Store({
       },
       extraOptions: chartConfigs.blueChartOptions,
     },
+    deals: [],
   },
   getters: {
     sidos(state) {
@@ -142,6 +143,9 @@ export default new Vuex.Store({
     SET_TYPE(state, payload) {
       state.bigLineChart.type = payload;
     },
+    SET_DEAL_LIST(state, deals) {
+      state.deals = deals;
+    },
   },
   actions: {
     setSidos(context) {
@@ -149,6 +153,7 @@ export default new Vuex.Store({
       .get("/area/sido")
       .then((response) => {
         if (response.status === 200) {
+          console.log(response);
           response.data.unshift(defaultSido);
           context.commit("SET_SIDOS", response.data);
           context.commit("SET_SIDO", defaultSido);
@@ -171,6 +176,7 @@ export default new Vuex.Store({
           )
           .then((response) => {
             if (response.status === 200) {
+              console.log(response);
               response.data.unshift(defaultSigugun);
               context.commit("SET_SIGUGUNS", response.data);
               context.commit("SET_SIGUGUN", response.data[0]);
@@ -201,6 +207,7 @@ export default new Vuex.Store({
           )
           .then((response) => {
             if (response.status === 200) {
+              console.log(response);
               response.data.unshift(defaultUpmyundong);
               context.commit("SET_UPMYUNDONGS", response.data);
               context.commit("SET_UPMYUNDONG", response.data[0]);
@@ -228,6 +235,7 @@ export default new Vuex.Store({
           })
           .then((response) => {
             if (response.status === 200) {
+              console.log(response);
               response.data.unshift(defaultHouse);
               context.commit("SET_HOUSES", response.data);
               context.commit("SET_HOUSE", response.data[0]);
@@ -265,6 +273,21 @@ export default new Vuex.Store({
           console.error(err);
         })
       }
-    }
+    },
+    getHouseDealList({ commit }, houseId) {
+      // 나중에 house.일련번호를 이용하여 API 호출
+      console.log("getHouseDealList 실행")
+      console.log(commit, houseId);
+      const params = { houseId: houseId };
+      http
+        .get("/house/apt/deal", { params })
+        .then(({ data }) => {
+          console.log(commit, data);
+          commit("SET_DEAL_LIST", data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   }
 });
