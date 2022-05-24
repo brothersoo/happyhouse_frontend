@@ -108,6 +108,13 @@ export default new Vuex.Store({
         return "조건을 선택해주세요"
       }
     },
+    selectedHousesNames(state) {
+      let names = [];
+      for (let house of state.selectedHouses) {
+        names.push(house.aptName);
+      }
+      return names;
+    }
   },
   mutations: {
     SET_SIDO(state, payload) {
@@ -279,11 +286,10 @@ export default new Vuex.Store({
           })
           .then((response) => {
             if (response.status === 200) {
-              for (let i = 0; i < response.data.datasets.length; i++) {
-                let dataset = response.data.datasets[i];
+              for (let dataset of response.data.datasets) {
+                let i = context.getters.selectedHousesNames.indexOf(dataset.label);
                 dataset.borderColor = theme[themeColors[i]];
                 dataset.pointBackgroundColor = theme[themeColors[i]];
-                context.commit("CHANGE_THEME_COLOR");
               }
               context.commit("SET_BIG_LINE_CHART", response.data);
             } else {
