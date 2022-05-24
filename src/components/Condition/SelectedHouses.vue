@@ -1,9 +1,9 @@
 <template>
   <div class="selected-houses-box">
     <b-badge
-      v-for="selectedHouse in selectedHouses"
+      v-for="(selectedHouse, index) in selectedHouses"
       :key="selectedHouse.id"
-      variant="info"
+      :variant="getThemeColor(index)"
       class="badge-lg"
       >{{ selectedHouse.aptName }}
       <i
@@ -16,6 +16,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { themeColors } from "@/store";
 
 export default {
   computed: {
@@ -23,6 +24,9 @@ export default {
   },
   methods: {
     ...mapActions(["removeSelectedHouse"]),
+    getThemeColor(index) {
+      return themeColors[index];
+    },
   },
 };
 </script>

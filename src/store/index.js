@@ -26,6 +26,17 @@ const defaultHouse = {
   id: 0,
 };
 
+export const theme = {
+  'default': '#172b4d',
+  'primary': '#5e72e4',
+  'secondary': '#f4f5f7',
+  'info': '#11cdef',
+  'success': '#2dce89',
+  'danger': '#f5365c',
+  'warning': '#fb6340'
+};
+export const themeColors = ["primary", "info", "success", "danger", "warning"];
+
 export default new Vuex.Store({
   state: {
     showHouseSelectNumberLimitAlert: false,
@@ -268,6 +279,12 @@ export default new Vuex.Store({
           })
           .then((response) => {
             if (response.status === 200) {
+              for (let i = 0; i < response.data.datasets.length; i++) {
+                let dataset = response.data.datasets[i];
+                dataset.borderColor = theme[themeColors[i]];
+                dataset.pointBackgroundColor = theme[themeColors[i]];
+                context.commit("CHANGE_THEME_COLOR");
+              }
               context.commit("SET_BIG_LINE_CHART", response.data);
             } else {
               console.error(response);
