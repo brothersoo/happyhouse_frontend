@@ -58,6 +58,13 @@
         />
       </b-col>
     </b-row>
+
+    <!-- <base-button icon type="warning" @click="downloadDealData">
+      <span class="btn-inner--icon"
+        ><i class="ni ni-cloud-download-95"></i
+      ></span>
+      <span class="btn-inner--text">매매 정보 불러오기</span>
+    </base-button> -->
   </div>
 </template>
 
