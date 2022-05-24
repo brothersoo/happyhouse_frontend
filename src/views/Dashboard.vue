@@ -238,10 +238,8 @@ export default {
   methods: {
     ...mapActions(["setBigLineChart", "setType"]),
     changeDateType(type) {
-      if (this.bigLineChart.type !== type) {
-        this.setType(type);
-        this.setBigLineChart();
-      }
+      this.setType(type);
+      this.setBigLineChart();
     },
     initBigChart() {
       this.setBigLineChart();
