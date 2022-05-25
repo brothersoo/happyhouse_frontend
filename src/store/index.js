@@ -276,22 +276,7 @@ export default new Vuex.Store({
         })
       }
     },
-    // getHouseDealList({ commit }, houseId) {
-    //   // 나중에 house.일련번호를 이용하여 API 호출
-    //   console.log("getHouseDealList 실행")
-    //   console.log(houseId);
-    //   const params = { houseId: houseId };
-    //   http
-    //     .get("/house/apt/deal", { params })
-    //     .then(({ data }) => {
-    //       console.log("dealList: ", data);
-    //       console.log(commit, data);
-    //       commit("SET_DEAL_LIST", data);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
+    
     getHouseDealList(context, houseId) {
       if (houseId) {
         http
