@@ -160,13 +160,13 @@ export default {
       if (this.selectedHouses.length < 5) {
         for (let selectedHouse of this.selectedHouses) {
           if (selectedHouse.id === this.house.id) {
-            this.alreadySelectedHouseAlert();
+            this.alreadySelectedHouseAlert(2);
             return;
           }
         }
         this.addSelectedHouse();
       } else {
-        this.houseSelectNumberLimitAlert();
+        this.houseSelectNumberLimitAlert(2);
       }
     },
     initBigChart() {

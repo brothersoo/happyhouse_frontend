@@ -39,8 +39,8 @@ export const themeColors = ["primary", "info", "success", "danger", "warning"];
 
 export default new Vuex.Store({
   state: {
-    showHouseSelectNumberLimitAlert: false,
-    showAlreadySelectedHouseAlert: false,
+    houseSelectNumberLimitAlertDismissCountDown: 0,
+    alreadySelectedHouseAlertDismissCountDown: 0,
 
     sidos: [defaultSido],
     siguguns: [defaultSigugun],
@@ -167,11 +167,11 @@ export default new Vuex.Store({
         }
       }
     },
-    HOUSE_SELECT_NUMBER_LIMIT_ALERT(state) {
-      state.showHouseSelectNumberLimitAlert = !state.showHouseSelectNumberLimitAlert;
+    HOUSE_SELECT_NUMBER_LIMIT_ALERT(state, payload) {
+      state.houseSelectNumberLimitAlertDismissCountDown = payload;
     },
-    ALREADY_SELECTED_HOUSE_ALERT(state) {
-      state.showAlreadySelectedHouseAlert = !state.showAlreadySelectedHouseAlert;
+    ALREADY_SELECTED_HOUSE_ALERT(state, payload) {
+      state.alreadySelectedHouseAlertDismissCountDown = payload;
     },
   },
   actions: {
@@ -305,13 +305,14 @@ export default new Vuex.Store({
       context.commit("ADD_SELECTED_HOUSE");
     },
     removeSelectedHouse(context, houseId) {
+      console.log(houseId);
       context.commit("REMOVE_SELECTED_HOUSE", houseId);
     },
-    houseSelectNumberLimitAlert(context) {
-      context.commit("HOUSE_SELECT_NUMBER_LIMIT_ALERT");
+    houseSelectNumberLimitAlert(context, second) {
+      context.commit("HOUSE_SELECT_NUMBER_LIMIT_ALERT", second);
     },
-    alreadySelectedHouseAlert(context) {
-      context.commit("ALREADY_SELECTED_HOUSE_ALERT");
+    alreadySelectedHouseAlert(context, second) {
+      context.commit("ALREADY_SELECTED_HOUSE_ALERT", second);
     }
   }
 });

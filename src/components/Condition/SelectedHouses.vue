@@ -1,6 +1,7 @@
 <template>
   <b-list-group>
     <b-list-group-item id="badge-box">
+      <p v-if="noHouseSelected">아파트를 최대 다섯개 선택하세요</p>
       <b-badge
         v-for="(selectedHouse, index) in selectedHouses"
         :key="selectedHouse.id"
@@ -10,8 +11,8 @@
         <i
           class="ni ni-fat-remove"
           @click="removeSelectedHouse(selectedHouse.id)"
-        ></i
-      ></b-badge>
+        ></i>
+      </b-badge>
     </b-list-group-item>
   </b-list-group>
 </template>
@@ -23,6 +24,9 @@ import { themeColors } from "@/store";
 export default {
   computed: {
     ...mapState(["selectedHouses"]),
+    noHouseSelected() {
+      return this.selectedHouses.length === 0;
+    },
   },
   methods: {
     ...mapActions(["removeSelectedHouse"]),

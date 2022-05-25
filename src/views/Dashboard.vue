@@ -2,18 +2,20 @@
   <div>
     <base-header class="pb-6 pb-8 pt-5 pt-md-8 bg-gradient-success">
       <b-alert
-        v-model="showHouseSelectNumberLimitAlert"
-        show
+        :show="houseSelectNumberLimitAlertDismissCountDown"
         dismissible
+        fade
         variant="warning"
+        @dismiss-count-down="houseSelectNumberLimitAlertCountDownChanged"
       >
         <span class="alert-text">다섯개 이상 지정할 수 없습니다</span>
       </b-alert>
       <b-alert
-        v-model="showAlreadySelectedHouseAlert"
-        show
+        :show="alreadySelectedHouseAlertDismissCountDown"
         dismissible
+        fade
         variant="warning"
+        @dismiss-count-down="alreadySelectedHouseAlertCountDownChanged"
       >
         <span class="alert-text">이미 선택된 집입니다</span>
       </b-alert>
@@ -214,8 +216,8 @@ export default {
   computed: {
     ...mapState([
       "bigLineChart",
-      "showHouseSelectNumberLimitAlert",
-      "showAlreadySelectedHouseAlert",
+      "houseSelectNumberLimitAlertDismissCountDown",
+      "alreadySelectedHouseAlertDismissCountDown",
     ]),
     ...mapGetters(["bigLineChartLabel"]),
     showHouseSelectNumberLimitAlert: {
@@ -236,7 +238,18 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["setBigLineChart", "setType"]),
+    ...mapActions([
+      "setBigLineChart",
+      "setType",
+      "houseSelectNumberLimitAlert",
+      "alreadySelectedHouseAlert",
+    ]),
+    houseSelectNumberLimitAlertCountDownChanged(dismissCountDown) {
+      this.$store.dispatch("houseSelectNumberLimitAlert", dismissCountDown);
+    },
+    alreadySelectedHouseAlertCountDownChanged(dismissCountDown) {
+      this.$store.dispatch("alreadySelectedHouseAlert", dismissCountDown);
+    },
     changeDateType(type) {
       this.setType(type);
       this.setBigLineChart();
