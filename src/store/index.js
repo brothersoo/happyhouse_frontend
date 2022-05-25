@@ -144,6 +144,8 @@ export default new Vuex.Store({
       state.bigLineChart.type = payload;
     },
     SET_DEAL_LIST(state, deals) {
+      console.log("SET_DEAL_LIST 호출");
+      console.log(deals);
       state.deals = deals;
     },
   },
@@ -274,20 +276,43 @@ export default new Vuex.Store({
         })
       }
     },
-    getHouseDealList({ commit }, houseId) {
-      // 나중에 house.일련번호를 이용하여 API 호출
-      console.log("getHouseDealList 실행")
-      console.log(commit, houseId);
-      const params = { houseId: houseId };
-      http
-        .get("/house/apt/deal", { params })
-        .then(({ data }) => {
-          console.log(commit, data);
-          commit("SET_DEAL_LIST", data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    // getHouseDealList({ commit }, houseId) {
+    //   // 나중에 house.일련번호를 이용하여 API 호출
+    //   console.log("getHouseDealList 실행")
+    //   console.log(houseId);
+    //   const params = { houseId: houseId };
+    //   http
+    //     .get("/house/apt/deal", { params })
+    //     .then(({ data }) => {
+    //       console.log("dealList: ", data);
+    //       console.log(commit, data);
+    //       commit("SET_DEAL_LIST", data);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
+    getHouseDealList(context, houseId) {
+      if (houseId) {
+        http
+          .get("/house/apt/deal", {
+            params: {
+              houseId
+            }
+          }
+          )
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response);
+              context.commit("SET_DEAL_LIST", response.data);
+            } else {
+              console.error(response);
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          })
+      } 
+    }
   }
 });
