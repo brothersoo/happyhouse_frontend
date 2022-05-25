@@ -111,7 +111,7 @@
           </card>
         </b-col>
 
-        <b-col xl="4" class="mb-5 mb-xl-0">
+        <!-- <b-col xl="4" class="mb-5 mb-xl-0">
           <card header-classes="bg-transparent">
             <b-row align-v="center" slot="header">
               <b-col>
@@ -127,19 +127,19 @@
             >
             </bar-chart>
           </card>
-        </b-col>
+        </b-col> -->
       </b-row>
       <!-- End charts-->
 
       <!--Tables-->
-      <b-row class="mt-5">
+      <!-- <b-row class="mt-5">
         <b-col xl="8" class="mb-5 mb-xl-0">
           <page-visits-table></page-visits-table>
         </b-col>
         <b-col xl="4" class="mb-5 mb-xl-0">
           <social-traffic-table></social-traffic-table>
         </b-col>
-      </b-row>
+      </b-row> -->
       <!--End tables-->
     </b-container>
   </div>
