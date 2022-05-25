@@ -295,50 +295,6 @@ export default {
       }
     },
 
-    // // 장소검색이 완료됐을 때 호출되는 콜백함수
-    // placesSearchCB(data, status, pagination) {
-    //   console.log("placesSearchCB 호출");
-    //   console.log("data:",data);
-    //   console.log(status);
-    //   console.log(kakao.maps.services.Status.OK);
-    //     if (status === kakao.maps.services.Status.OK) {
-    //       console.log(pagination);
-    //       console.log("검색 완료");
-    //         // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
-    //         var order = document.getElementById(this.currCategory).getAttribute('data-order');
-    //         console.log("data: ", data);
-    //         for ( var i=0; i<data.length; i++ ) {
-    //           // 마커를 생성하고 지도에 표시합니다
-
-    //           var position = new kakao.maps.LatLng(data[i].y, data[i].x);
-
-    //           var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
-    //               imageSize = new kakao.maps.Size(27, 28),  // 마커 이미지의 크기
-    //               imgOptions =  {
-    //                   spriteSize : new kakao.maps.Size(72, 208), // 스프라이트 이미지의 크기
-    //                   spriteOrigin : new kakao.maps.Point(46, (order*36)), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
-    //                   offset: new kakao.maps.Point(11, 28) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
-    //               },
-    //               markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
-                  
-    //               categoryMarker = new kakao.maps.Marker({
-    //                   map: this.map,
-    //                   position: position, // 마커의 위치
-    //                   image: markerImage 
-    //               });
-              
-    //           categoryMarker.setMap(this.map);  
-    //           this.categoryMarkers.push(categoryMarker);
-    //         } 
-    //     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-    //         // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
-
-    //     } else if (status === kakao.maps.services.Status.ERROR) {
-    //         // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
-            
-    //     }
-    // },
-
     removeCategoryMarker() {
       for ( var i = 0; i < this.categoryMarkers.length; i++ ) {
           this.categoryMarkers[i].setMap(null);
