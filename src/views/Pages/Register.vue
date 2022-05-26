@@ -15,7 +15,7 @@
       </b-container>
       <div class="separator separator-bottom separator-skew zindex-100">
         <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
-             xmlns="http://www.w3.org/2000/svg">
+            xmlns="http://www.w3.org/2000/svg">
           <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
         </svg>
       </div>
@@ -48,19 +48,19 @@
                   <base-input alternative
                               class="mb-3"
                               prepend-icon="ni ni-hat-3"
-                              placeholder="Name"
-                              name="Name"
+                              placeholder="ID"
+                              name="Id"
                               :rules="{required: true}"
-                              v-model="model.name">
+                              v-model="user.id">
                   </base-input>
 
                   <base-input alternative
                               class="mb-3"
-                              prepend-icon="ni ni-email-83"
-                              placeholder="Email"
-                              name="Email"
-                              :rules="{required: true, email: true}"
-                              v-model="model.email">
+                              prepend-icon="ni ni-hat-3"
+                              placeholder="Name"
+                              name="Name"
+                              :rules="{required: true}"
+                              v-model="user.name">
                   </base-input>
 
                   <base-input alternative
@@ -70,14 +70,42 @@
                               type="password"
                               name="Password"
                               :rules="{required: true, min: 6}"
-                              v-model="model.password">
+                              v-model="user.password">
                   </base-input>
+
+                  <!-- <base-input alternative
+                              class="mb-3"
+                              prepend-icon="ni ni-email-83"
+                              placeholder="Email"
+                              name="Email"
+                              :rules="{required: true, email: true}"
+                              v-model="user.email">
+                  </base-input> -->
+
+                  <base-input alternative
+                              class="mb-3"
+                              prepend-icon="ni ni-hat-3"
+                              placeholder="Address"
+                              name="Address"
+                              :rules="{required: true}"
+                              v-model="user.address">
+                  </base-input>
+
+                  <base-input alternative
+                              class="mb-3"
+                              prepend-icon="ni ni-hat-3"
+                              placeholder="Phone Number"
+                              name="Tel"
+                              :rules="{required: true}"
+                              v-model="user.tel">
+                  </base-input>
+
                   <div class="text-muted font-italic"><small>password strength: <span
                     class="text-success font-weight-700">strong</span></small></div>
                   <b-row class=" my-4">
                     <b-col cols="12">
                       <base-input :rules="{ required: { allowFalse: false } }" name=Privacy Policy>
-                        <b-form-checkbox v-model="model.agree">
+                        <b-form-checkbox v-model="user.agree">
                           <span class="text-muted">I agree with the <a href="#!">Privacy Policy</a></span>
                         </b-form-checkbox>
                       </base-input>
@@ -96,25 +124,103 @@
   </div>
 </template>
 <script>
+// import { createUser, getUser, modifyUser } from "@/api/user";
+import { mapActions } from "vuex";
+
+// const userStore = "userStore";
 
   export default {
     name: 'register',
     data() {
       return {
-        model: {
-          name: '',
-          email: '',
+        user: {
+          userid: '',
+          username: '',
           password: '',
+          address: '',
+          tel: '',
           agree: false
-        }
-      }
+        },
+      };
     },
+    // computed: {
+    //   ...mapState(userStore, ["userInfo"]),
+    // },
+    // created(){
+    //   this.user.id = this.userInfo.userid;
+    // },
     methods: {
+      ...mapActions(["createUser"]),
       onSubmit() {
-        // this will be called only after form is valid. You can do an api call here to register users
-      }
-    }
 
+        // let err = true;
+        // let msg = "";
+        // !this.user.userid &&
+        //   ((msg = "아이디를 입력해주세요"),
+        //   (err = false),
+        //   this.$refs.userid.focus());
+        // err &&
+        //   !this.user.username &&
+        //   ((msg = "이름을 입력해주세요"),
+        //   (err = false),
+        //   this.$refs.username.focus());
+        // err &&
+        //   !this.user.password &&
+        //   ((msg = "비밀번호를 입력해주세요"),
+        //   (err = false),
+        //   this.$refs.password.focus());
+        // err &&
+        //   !this.user.address &&
+        //   ((msg = "주소를 입력해주세요"),
+        //   (err = false),
+        //   this.$refs.email.focus());
+        // err &&
+        //   !this.user.tel &&
+        //   ((msg = "전화번호를 입력해주세요"),
+        //   (err = false),
+        //   this.$refs.tel.focus());
+
+        // if (!err) alert(msg);
+        // else
+          this.registUser();
+      },
+      registUser(){
+        this.createUser(this.user);
+        // http
+        //   .post("/user/register", {user})
+        //   .then(({ data }) => {
+        //     let msg = "등록 처리시 문제가 발생했습니다.";
+        //     if (data === "success") {
+        //       msg = "등록이 완료되었습니다.";
+        //     }
+        //     alert(msg);
+        //     this.moveProfile();
+        //   });
+        // createUser(
+        //   {
+        //     userid: this.user.userid,
+        //     username: this.user.username,
+        //     password: this.user.password,
+        //     email: this.user.address,
+        //     tel: this.user.tel,
+        //   },
+        //   ({ data }) => {
+        //     let msg = "등록 처리시 문제가 발생했습니다.";
+        //     if (data === "success") {
+        //       msg = "등록이 완료되었습니다.";
+        //     }
+        //     alert(msg);
+        //     this.moveProfile();
+        //   },
+        //   (error) => {
+        //     console.log(error);
+        //   },
+        // );
+      },
+      // moveProfile() {
+      //   this.$router.push("/profile");
+      // },
+    }
   };
 </script>
 <style></style>
