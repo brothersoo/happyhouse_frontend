@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
     <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center profile-header"
         style="min-height: 600px; background-image: url(img/theme/profile-cover.jpg); background-size: cover; background-position: center top;">
       <b-container fluid>
@@ -9,7 +9,7 @@
         <b-container fluid class="d-flex align-items-center">
           <b-row >
             <b-col lg="7" md="10">
-              <h1 class="display-2 text-white">Hello Jesse</h1>
+              <h1 class="display-2 text-white">Hello </h1>
               <p class="text-white mt-0 mb-5">This is your profile page. You can see the progress you've made with your
                 work and manage your projects or assigned tasks</p>
               <a href="#!" class="btn btn-info">Edit profile</a>
@@ -34,12 +34,16 @@
 <script>
   import EditProfileForm from './UserProfile/EditProfileForm.vue';
   import UserCard from './UserProfile/UserCard.vue';
+  import { mapState } from "vuex";
 
   export default {
     components: {
       EditProfileForm,
       UserCard
-    }
+    },
+    computed: {
+    ...mapState(["user"]),
+  },
   };
 </script>
 <style>
