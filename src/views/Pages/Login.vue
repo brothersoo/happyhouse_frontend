@@ -17,7 +17,7 @@
       </b-container>
       <div class="separator separator-bottom separator-skew zindex-100">
         <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
-             xmlns="http://www.w3.org/2000/svg">
+            xmlns="http://www.w3.org/2000/svg">
           <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
         </svg>
       </div>
@@ -48,21 +48,21 @@
                 <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
                   <base-input alternative
                               class="mb-3"
-                              name="Id"
+                              name="userId"
                               :rules="{required: true}"
                               prepend-icon="ni ni-hat-3"
                               placeholder="ID"
-                              v-model="user.userid">
+                              v-model="user.userId">
                   </base-input>
 
                   <base-input alternative
                               class="mb-3"
-                              name="Password"
+                              name="userPwd"
                               :rules="{required: true, min: 6}"
                               prepend-icon="ni ni-lock-circle-open"
                               type="password"
                               placeholder="Password"
-                              v-model="user.password">
+                              v-model="user.userPwd">
                   </base-input>
 
                   <b-form-checkbox v-model="user.rememberMe">Remember me</b-form-checkbox>
@@ -83,47 +83,57 @@
           </b-row>
         </b-col>
       </b-row>
-    </b-container> -->
+    </b-container>
   </div> 
 </template>
 <script>
-// import { mapState, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 
   export default {
     data() {
       return {
-        userid: '',
-        password: '',
-        rememberMe: false
+        user: {
+          userId: '',
+          userPwd: '',
+          rememberMe: false
+        }
       };
     },
-//     computed: {
-//       ...mapState(["isLogin", "isLoginError"]),
-//     },
+    computed: {
+      ...mapState(["isLogin", "isLoginError", "loginId"]),
+    },
     methods: {
-//       ...mapActions(["userConfirm", "getUserInfo"]),
-      loginSubmit(){
-        let saveData = {};
-        saveData.userId = this.useiId;
-        saveData.userPwd = this.userPassword;
-
-        try {
-          http
-            .post("/login", JSON.stringify(saveData), {
-              headers: {
-                "Content-Type": `application/json`,
-              },
-            })
-            .then((res) => {
-              if (res.status === 200) {
-                this.$store.commit("SET_LOGIN", res.data);
-                this.$router.push("/");
-              }
-            });
-        } catch (error) {
-          console.error(error);
+      ...mapActions(["userConfirm", "getUserInfo"]),
+      async onSubmit(){
+        await this.userConfirm(this.user);
+        let token = sessionStorage.getItem("access-token");
+        if (this.isLogin) {
+          await this.getUserInfo(this.token);
+          this.$router.push({ name: "dashboard" });
         }
       }
+      // onSubmit(){
+      //   let saveData = {};
+      //   saveData.userId = this.useiId;
+      //   saveData.userPwd = this.userPassword;
+
+      //   try {
+      //     http
+      //       .post("/login", JSON.stringify(saveData), {
+      //         headers: {
+      //           "Content-Type": `application/json`,
+      //         },
+      //       })
+      //       .then((res) => {
+      //         if (res.status === 200) {
+      //           this.$store.commit("SET_LOGIN", res.data);
+      //           this.$router.push("/");
+      //         }
+      //       });
+      //   } catch (error) {
+      //     console.error(error);
+      //   }
+      // }
 //       init() {
 //         gapi.load('auth2', () => {
 //           gapi.auth2.init();

@@ -49,18 +49,18 @@
                               class="mb-3"
                               prepend-icon="ni ni-hat-3"
                               placeholder="ID"
-                              name="Id"
+                              name="userId"
                               :rules="{required: true}"
-                              v-model="user.id">
+                              v-model="user.userId">
                   </base-input>
 
                   <base-input alternative
                               class="mb-3"
                               prepend-icon="ni ni-hat-3"
                               placeholder="Name"
-                              name="Name"
+                              name="userName"
                               :rules="{required: true}"
-                              v-model="user.name">
+                              v-model="user.userName">
                   </base-input>
 
                   <base-input alternative
@@ -68,9 +68,9 @@
                               prepend-icon="ni ni-lock-circle-open"
                               placeholder="password"
                               type="password"
-                              name="Password"
+                              name="userPwd"
                               :rules="{required: true, min: 6}"
-                              v-model="user.password">
+                              v-model="user.userPwd">
                   </base-input>
 
                   <!-- <base-input alternative
@@ -86,18 +86,18 @@
                               class="mb-3"
                               prepend-icon="ni ni-hat-3"
                               placeholder="Address"
-                              name="Address"
+                              name="userAddr"
                               :rules="{required: true}"
-                              v-model="user.address">
+                              v-model="user.userAddr">
                   </base-input>
 
                   <base-input alternative
                               class="mb-3"
                               prepend-icon="ni ni-hat-3"
                               placeholder="Phone Number"
-                              name="Tel"
+                              name="userTel"
                               :rules="{required: true}"
-                              v-model="user.tel">
+                              v-model="user.userTel">
                   </base-input>
 
                   <div class="text-muted font-italic"><small>password strength: <span
@@ -124,103 +124,34 @@
   </div>
 </template>
 <script>
-// import { createUser, getUser, modifyUser } from "@/api/user";
 import { mapActions } from "vuex";
 
-// const userStore = "userStore";
+export default {
+  name: 'register',
+  data() {
+    return {
+      user: {
+        userId: '',
+        userName: '',
+        userPwd: '',
+        userAddr: '',
+        userTel: '',
+        agree: false
+      },
+    };
+  },
+  methods: {
+    ...mapActions(["createUser"]),
+    onSubmit() {
 
-  export default {
-    name: 'register',
-    data() {
-      return {
-        user: {
-          userid: '',
-          username: '',
-          password: '',
-          address: '',
-          tel: '',
-          agree: false
-        },
-      };
+        this.registUser();
     },
-    // computed: {
-    //   ...mapState(userStore, ["userInfo"]),
-    // },
-    // created(){
-    //   this.user.id = this.userInfo.userid;
-    // },
-    methods: {
-      ...mapActions(["createUser"]),
-      onSubmit() {
-
-        // let err = true;
-        // let msg = "";
-        // !this.user.userid &&
-        //   ((msg = "아이디를 입력해주세요"),
-        //   (err = false),
-        //   this.$refs.userid.focus());
-        // err &&
-        //   !this.user.username &&
-        //   ((msg = "이름을 입력해주세요"),
-        //   (err = false),
-        //   this.$refs.username.focus());
-        // err &&
-        //   !this.user.password &&
-        //   ((msg = "비밀번호를 입력해주세요"),
-        //   (err = false),
-        //   this.$refs.password.focus());
-        // err &&
-        //   !this.user.address &&
-        //   ((msg = "주소를 입력해주세요"),
-        //   (err = false),
-        //   this.$refs.email.focus());
-        // err &&
-        //   !this.user.tel &&
-        //   ((msg = "전화번호를 입력해주세요"),
-        //   (err = false),
-        //   this.$refs.tel.focus());
-
-        // if (!err) alert(msg);
-        // else
-          this.registUser();
-      },
-      registUser(){
-        this.createUser(this.user);
-        // http
-        //   .post("/user/register", {user})
-        //   .then(({ data }) => {
-        //     let msg = "등록 처리시 문제가 발생했습니다.";
-        //     if (data === "success") {
-        //       msg = "등록이 완료되었습니다.";
-        //     }
-        //     alert(msg);
-        //     this.moveProfile();
-        //   });
-        // createUser(
-        //   {
-        //     userid: this.user.userid,
-        //     username: this.user.username,
-        //     password: this.user.password,
-        //     email: this.user.address,
-        //     tel: this.user.tel,
-        //   },
-        //   ({ data }) => {
-        //     let msg = "등록 처리시 문제가 발생했습니다.";
-        //     if (data === "success") {
-        //       msg = "등록이 완료되었습니다.";
-        //     }
-        //     alert(msg);
-        //     this.moveProfile();
-        //   },
-        //   (error) => {
-        //     console.log(error);
-        //   },
-        // );
-      },
-      // moveProfile() {
-      //   this.$router.push("/profile");
-      // },
+    registUser(){
+      console.log("registUser 호출");
+      this.createUser(this.user);
+      this.$router.push({ name: "login" });
     }
-  };
+  }
+};
 </script>
 <style></style>

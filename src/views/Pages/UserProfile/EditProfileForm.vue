@@ -19,122 +19,68 @@
               type="text"
               label="Username"
               placeholder="Username"
-              v-model="user.username"
+              v-model="userInfo.userName"
             >
             </base-input>
           </b-col>
           <b-col lg="6">
             <base-input
-              type="email"
-              label="Email address"
-              placeholder="mike@email.com"
-              v-model="user.email"
+              type="text"
+              label="Tel"
+              placeholder="PhoneNum"
+              v-model="userInfo.userTel"
             >
             </base-input>
           </b-col>
         </b-row>
         <b-row >
-          <b-col lg="6">
-            <base-input
-              type="text"
-              label="First Name"
-              placeholder="First Name"
-              v-model="user.firstName"
-            >
-            </base-input>
-          </b-col>
-          <b-col lg="6">
-            <base-input
-              type="text"
-              label="Last Name"
-              placeholder="Last Name"
-              v-model="user.lastName"
-            >
-            </base-input>
-          </b-col>
-        </b-row>
-      </div>
-      <hr class="my-4">
-
-      <!-- Address -->
-      <h6 class="heading-small text-muted mb-4">Contact information</h6>
-
-      <div class="pl-lg-4">
-        <b-row>
-          <b-col md="12">
+          <b-col lg="12">
             <base-input
               type="text"
               label="Address"
-              placeholder="Home Address"
-              v-model="user.address"
-            >
-            </base-input>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col lg="4">
-            <base-input
-              type="text"
-              label="City"
-              placeholder="City"
-              v-model="user.city"
-            >
-            </base-input>
-          </b-col>
-          <b-col lg="4">
-            <base-input
-              type="text"
-              label="Country"
-              placeholder="Country"
-              v-model="user.country"
-            >
-            </base-input>
-          </b-col>
-          <b-col lg="4">
-            <base-input
-              label="Postal Code"
-              placeholder="ZIP Code"
-              v-model="user.postalCode"
+              placeholder="Address"
+              v-model="userInfo.userAddr"
             >
             </base-input>
           </b-col>
         </b-row>
       </div>
-
       <hr class="my-4">
-      <!-- Description -->
-      <h6 class="heading-small text-muted mb-4">About me</h6>
-      <div class="pl-lg-4">
-        <b-form-group label="About Me" label-class="form-control-label" class="mb-0" label-for="about-form-textaria">
-         <!--  <label class="form-control-label">About Me</label> -->
-          <b-form-textarea rows="4" value="A beautiful premium dashboard for BootstrapVue." id="about-form-textaria" placeholder="A few words about you ..."></b-form-textarea>
-        </b-form-group>
+      <div class="text-center">
+        <b-button type="submit" variant="primary" class="mt-4">Save</b-button>
       </div>
-
     </b-form>
   </card>
 </template>
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   data() {
     return {
-      user: {
-        company: 'Creative Code Inc.',
-        username: 'michael23',
-        email: '',
-        firstName: 'Mike',
-        lastName: 'Andrew',
-        address: 'Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09',
-        city: 'New York',
-        country: 'USA',
-        postalCode: '',
-        aboutMe: `Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.`
-      }
+      userInfo: {
+        // userId: '',
+        userName: '',
+        userPwd: '',
+        userAddr: '',
+        userTel: '',
+      },
     };
   },
+  computed: {
+    ...mapState(["user"]),
+  },
   methods: {
+    ...mapActions(["updateUser"]),
+    init() {
+      this.userInfo.userName = this.user.userName;
+    },
     updateProfile() {
-      alert('Your data: ' + JSON.stringify(this.user));
+      console.log("updateProfile 호출");
+      // this.updateUser(this.userInfo);
+      let token = sessionStorage.getItem("access-token");
+      this.updateUser(this.token);
+      // alert('Your data: ' + JSON.stringify(this.user));
     }
   }
 };
