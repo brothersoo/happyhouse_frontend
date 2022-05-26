@@ -58,6 +58,13 @@
         />
       </b-col>
     </b-row>
+
+    <!-- <base-button icon type="warning" @click="downloadDealData">
+      <span class="btn-inner--icon"
+        ><i class="ni ni-cloud-download-95"></i
+      ></span>
+      <span class="btn-inner--text">매매 정보 불러오기</span>
+    </base-button> -->
   </div>
 </template>
 
@@ -69,7 +76,13 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["sidos", "siguguns", "upmyundongs", "houses"]),
+    ...mapState([
+      "sidos",
+      "siguguns",
+      "upmyundongs",
+      "houses",
+      "selectedHouses",
+    ]),
     sido: {
       get() {
         return this.$store.state.sido;
@@ -126,6 +139,9 @@ export default {
       "setUpmyundongs",
       "setHouses",
       "setBigLineChart",
+      "addSelectedHouse",
+      "houseSelectNumberLimitAlert",
+      "alreadySelectedHouseAlert",
     ]),
     sidoSelected() {
       console.log("sido selected", this.sido.code);
@@ -141,10 +157,22 @@ export default {
     },
     houseSelected() {
       console.log("house selected");
+      if (this.selectedHouses.length < 5) {
+        for (let selectedHouse of this.selectedHouses) {
+          if (selectedHouse.id === this.house.id) {
+            this.alreadySelectedHouseAlert(2);
+            return;
+          }
+        }
+        this.addSelectedHouse();
+      } else {
+        this.houseSelectNumberLimitAlert(2);
+      }
     },
     initBigChart() {
       this.setBigLineChart();
     },
+    downloadDealData() {},
   },
   created() {
     this.setSidos();

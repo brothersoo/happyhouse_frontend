@@ -1,8 +1,26 @@
 <template>
   <div>
     <base-header class="pb-6 pb-8 pt-5 pt-md-8 bg-gradient-success">
+      <b-alert
+        :show="houseSelectNumberLimitAlertDismissCountDown"
+        dismissible
+        fade
+        variant="warning"
+        @dismiss-count-down="houseSelectNumberLimitAlertCountDownChanged"
+      >
+        <span class="alert-text">다섯개 이상 지정할 수 없습니다</span>
+      </b-alert>
+      <b-alert
+        :show="alreadySelectedHouseAlertDismissCountDown"
+        dismissible
+        fade
+        variant="warning"
+        @dismiss-count-down="alreadySelectedHouseAlertCountDownChanged"
+      >
+        <span class="alert-text">이미 선택된 집입니다</span>
+      </b-alert>
       <!-- Card stats -->
-      <b-row>
+      <!-- <b-row>
         <b-col xl="3" md="6">
           <stats-card
             title="Total traffic"
@@ -59,12 +77,16 @@
             </template>
           </stats-card>
         </b-col>
-      </b-row>
+      </b-row> -->
       <!-- Card stats end -->
 
       <!-- Area dropdown selector -->
       <b-row>
         <house-deal></house-deal>
+      </b-row>
+
+      <b-row>
+        <selected-houses></selected-houses>
       </b-row>
       <!-- Area dropdown selector end-->
     </base-header>
@@ -162,6 +184,7 @@ import StatsCard from "@/components/Cards/StatsCard";
 // Tables
 import SocialTrafficTable from "./Dashboard/SocialTrafficTable";
 import PageVisitsTable from "./Dashboard/PageVisitsTable";
+import SelectedHouses from "../components/Condition/SelectedHouses.vue";
 
 export default {
   components: {
@@ -172,6 +195,7 @@ export default {
     PageVisitsTable,
     SocialTrafficTable,
     HouseDeal,
+    SelectedHouses,
   },
   data() {
     return {
@@ -190,16 +214,45 @@ export default {
     };
   },
   computed: {
-    ...mapState(["bigLineChart"]),
+    ...mapState([
+      "bigLineChart",
+      "houseSelectNumberLimitAlertDismissCountDown",
+      "alreadySelectedHouseAlertDismissCountDown",
+    ]),
     ...mapGetters(["bigLineChartLabel"]),
+    showHouseSelectNumberLimitAlert: {
+      get() {
+        return this.$store.state.showHouseSelectNumberLimitAlert;
+      },
+      set(value) {
+        this.$store.commit("HOUSE_SELECT_NUMBER_LIMIT_ALERT");
+      },
+    },
+    showAlreadySelectedHouseAlert: {
+      get() {
+        return this.$store.state.showAlreadySelectedHouseAlert;
+      },
+      set(value) {
+        this.$store.commit("ALREADY_SELECTED_HOUSE_ALERT");
+      },
+    },
   },
   methods: {
-    ...mapActions(["setBigLineChart", "setType"]),
+    ...mapActions([
+      "setBigLineChart",
+      "setType",
+      "houseSelectNumberLimitAlert",
+      "alreadySelectedHouseAlert",
+    ]),
+    houseSelectNumberLimitAlertCountDownChanged(dismissCountDown) {
+      this.$store.dispatch("houseSelectNumberLimitAlert", dismissCountDown);
+    },
+    alreadySelectedHouseAlertCountDownChanged(dismissCountDown) {
+      this.$store.dispatch("alreadySelectedHouseAlert", dismissCountDown);
+    },
     changeDateType(type) {
-      if (this.bigLineChart.type !== type) {
-        this.setType(type);
-        this.setBigLineChart();
-      }
+      this.setType(type);
+      this.setBigLineChart();
     },
     initBigChart() {
       this.setBigLineChart();

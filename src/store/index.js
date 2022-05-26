@@ -24,11 +24,25 @@ const defaultUpmyundong = {
 
 const defaultHouse = {
   aptName: "건물명",
-  code: "",
+  id: 0,
 };
+
+export const theme = {
+  'default': '#172b4d',
+  'primary': '#5e72e4',
+  'secondary': '#f4f5f7',
+  'info': '#11cdef',
+  'success': '#2dce89',
+  'danger': '#f5365c',
+  'warning': '#fb6340'
+};
+export const themeColors = ["primary", "info", "success", "danger", "warning"];
 
 export default new Vuex.Store({
   state: {
+    houseSelectNumberLimitAlertDismissCountDown: 0,
+    alreadySelectedHouseAlertDismissCountDown: 0,
+
     sidos: [defaultSido],
     siguguns: [defaultSigugun],
     upmyundongs: [defaultUpmyundong],
@@ -37,14 +51,14 @@ export default new Vuex.Store({
     sigugun: defaultSigugun,
     upmyundong: defaultUpmyundong,
     house: defaultHouse,
+    selectedHouses: [],
     fromDate: "",
     toDate: "",
     bigLineChart: {
       type: "",
       allData: [],
       chartData: {
-        datasets: [
-        ],
+        datasets: [],
         labels: [],
       },
       extraOptions: chartConfigs.blueChartOptions,
@@ -85,10 +99,14 @@ export default new Vuex.Store({
     graphAPIParams(state) {
       var fromDate = state.fromDate.split("-");
       var toDate = state.toDate.split("-");
+      let houseIds = [];
+      for (let house of state.selectedHouses) {
+        houseIds.push(house.id);
+      }
       return {
         code: state.upmyundong.code,
         type: state.bigLineChart.type,
-        houseId: state.house.id,
+        houseIds: houseIds.join(","),
         fromYear: fromDate[0],
         toYear: toDate[0],
         fromMonth: fromDate[1],
@@ -103,6 +121,13 @@ export default new Vuex.Store({
       } else {
         return "조건을 선택해주세요"
       }
+    },
+    selectedHousesNames(state) {
+      let names = [];
+      for (let house of state.selectedHouses) {
+        names.push(house.aptName);
+      }
+      return names;
     },
     checkUserInfo: function (state) {
       return state.user;
@@ -133,22 +158,9 @@ export default new Vuex.Store({
     SET_HOUSES(state, payload) {
       state.houses = payload;
     },
-    SET_BIG_LINE_CHART(state, deals) {
-      let datasets = [];
-      let avgPriceData = [];
-      let labels = [];
-      for (let deal of deals) {
-        avgPriceData.push(deal.avgPrice);
-        labels.push(deal.date)
-      }
-      datasets.push({
-        label: "평균 거래가",
-        data: avgPriceData
-      });
-      state.bigLineChart.chartData = {
-        datasets,
-        labels,
-      };
+    SET_BIG_LINE_CHART(state, payload) {
+      console.log(payload);
+      state.bigLineChart.chartData = payload;
     },
     SET_FROM_DATE(state, payload) {
       state.fromDate = payload;
@@ -158,6 +170,25 @@ export default new Vuex.Store({
     },
     SET_TYPE(state, payload) {
       state.bigLineChart.type = payload;
+    },
+    ADD_SELECTED_HOUSE(state) {
+      if (state.house.id) {
+        state.selectedHouses.push(state.house);
+      }
+    },
+    REMOVE_SELECTED_HOUSE(state, removalHouseId) {
+      for (let i = 0; i < state.selectedHouses.length; i++) {
+        if (state.selectedHouses[i].id === removalHouseId) {
+          state.selectedHouses.splice(i, 1);
+          break;
+        }
+      }
+    },
+    HOUSE_SELECT_NUMBER_LIMIT_ALERT(state, payload) {
+      state.houseSelectNumberLimitAlertDismissCountDown = payload;
+    },
+    ALREADY_SELECTED_HOUSE_ALERT(state, payload) {
+      state.alreadySelectedHouseAlertDismissCountDown = payload;
     },
     SET_DEAL_LIST(state, deals) {
       console.log("SET_DEAL_LIST 호출");
@@ -301,6 +332,19 @@ export default new Vuex.Store({
     setType(context, type) {
       context.commit("SET_TYPE", type);
     },
+    addSelectedHouse(context) {
+      context.commit("ADD_SELECTED_HOUSE");
+    },
+    removeSelectedHouse(context, houseId) {
+      console.log(houseId);
+      context.commit("REMOVE_SELECTED_HOUSE", houseId);
+    },
+    houseSelectNumberLimitAlert(context, second) {
+      context.commit("HOUSE_SELECT_NUMBER_LIMIT_ALERT", second);
+    },
+    alreadySelectedHouseAlert(context, second) {
+      context.commit("ALREADY_SELECTED_HOUSE_ALERT", second);
+    },
     setBigLineChart(context) {
       if (context.state.house) {
         let params = context.getters.graphAPIParams;
@@ -310,8 +354,12 @@ export default new Vuex.Store({
           })
           .then((response) => {
             if (response.status === 200) {
-              console.log(response.data.deals);
-              context.commit("SET_BIG_LINE_CHART", response.data.deals);
+              for (let dataset of response.data.datasets) {
+                let i = context.getters.selectedHousesNames.indexOf(dataset.label);
+                dataset.borderColor = theme[themeColors[i]];
+                dataset.pointBackgroundColor = theme[themeColors[i]];
+              }
+              context.commit("SET_BIG_LINE_CHART", response.data);
             } else {
               console.error(response);
             }
@@ -321,7 +369,7 @@ export default new Vuex.Store({
           })
       }
     },
-    
+
     getHouseDealList(context, houseId) {
       if (houseId) {
         http
@@ -396,6 +444,7 @@ export default new Vuex.Store({
         .catch((err) => {
           console.error(err);
         })
+      }
     },
     getUserInfo({ commit }, token) {
       console.log("getUserInfo 호출");
@@ -455,4 +504,4 @@ export default new Vuex.Store({
     //   );
     // }
   }
-});
+);
