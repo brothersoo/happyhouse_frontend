@@ -1,7 +1,9 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="header bg-gradient-success py-7 py-lg-8 pt-lg-9">
+    <!-- content에 자신의 OAuth2.0 클라이언트ID를 넣습니다. --> 
+ <!--<meta name ="google-signin-client_id" content="592971916286-k121r5vuo8tsd8h0fe3t28enaqqie8cf.apps.googleusercontent.com">-->
+    <div class="header bg-gradient-success py-7 py-lg-8 pt-lg-9"> 
       <b-container>
         <div class="header-body text-center mb-7">
           <b-row class="justify-content-center">
@@ -15,7 +17,7 @@
       </b-container>
       <div class="separator separator-bottom separator-skew zindex-100">
         <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
-             xmlns="http://www.w3.org/2000/svg">
+            xmlns="http://www.w3.org/2000/svg">
           <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
         </svg>
       </div>
@@ -28,11 +30,11 @@
             <b-card-header class="bg-transparent pb-5"  >
               <div class="text-muted text-center mt-2 mb-3"><small>Sign in with</small></div>
               <div class="btn-wrapper text-center">
-                <a href="#" class="btn btn-neutral btn-icon">
+                <a href="#" class="btn btn-neutral btn-icon" id="GgCustomLogin">
                   <span class="btn-inner--icon"><img src="img/icons/common/github.svg"></span>
                   <span class="btn-inner--text">Github</span>
                 </a>
-                <a href="#" class="btn btn-neutral btn-icon">
+                <a href="javascript:void(0)" class="btn btn-neutral btn-icon">
                   <span class="btn-inner--icon"><img src="img/icons/common/google.svg"></span>
                   <span class="btn-inner--text">Google</span>
                 </a>
@@ -46,24 +48,24 @@
                 <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
                   <base-input alternative
                               class="mb-3"
-                              name="Email"
-                              :rules="{required: true, email: true}"
-                              prepend-icon="ni ni-email-83"
-                              placeholder="Email"
-                              v-model="model.email">
+                              name="userId"
+                              :rules="{required: true}"
+                              prepend-icon="ni ni-hat-3"
+                              placeholder="ID"
+                              v-model="user.userId">
                   </base-input>
 
                   <base-input alternative
                               class="mb-3"
-                              name="Password"
+                              name="userPwd"
                               :rules="{required: true, min: 6}"
                               prepend-icon="ni ni-lock-circle-open"
                               type="password"
                               placeholder="Password"
-                              v-model="model.password">
+                              v-model="user.userPwd">
                   </base-input>
 
-                  <b-form-checkbox v-model="model.rememberMe">Remember me</b-form-checkbox>
+                  <b-form-checkbox v-model="user.rememberMe">Remember me</b-form-checkbox>
                   <div class="text-center">
                     <base-button type="primary" native-type="submit" class="my-4">Sign in</base-button>
                   </div>
@@ -82,23 +84,99 @@
         </b-col>
       </b-row>
     </b-container>
-  </div>
+  </div> 
 </template>
 <script>
+import { mapState, mapActions } from "vuex";
+
   export default {
     data() {
       return {
-        model: {
-          email: '',
-          password: '',
+        user: {
+          userId: '',
+          userPwd: '',
           rememberMe: false
         }
       };
     },
+    computed: {
+      ...mapState(["isLogin", "isLoginError", "loginId"]),
+    },
     methods: {
-      onSubmit() {
-        // this will be called only after form is valid. You can do api call here to login
+      ...mapActions(["userConfirm", "getUserInfo"]),
+      async onSubmit(){
+        await this.userConfirm(this.user);
+        let token = sessionStorage.getItem("access-token");
+        if (this.isLogin) {
+          await this.getUserInfo(this.token);
+          this.$router.push({ name: "dashboard" });
+        }
       }
-    }
+      // onSubmit(){
+      //   let saveData = {};
+      //   saveData.userId = this.useiId;
+      //   saveData.userPwd = this.userPassword;
+
+      //   try {
+      //     http
+      //       .post("/login", JSON.stringify(saveData), {
+      //         headers: {
+      //           "Content-Type": `application/json`,
+      //         },
+      //       })
+      //       .then((res) => {
+      //         if (res.status === 200) {
+      //           this.$store.commit("SET_LOGIN", res.data);
+      //           this.$router.push("/");
+      //         }
+      //       });
+      //   } catch (error) {
+      //     console.error(error);
+      //   }
+      // }
+//       init() {
+//         gapi.load('auth2', () => {
+//           gapi.auth2.init();
+//           options = new gapi.auth2.SigninOptionsBuilder();
+//           options.setPrompt('select_account');
+//               // 추가는 Oauth 승인 권한 추가 후 띄어쓰기 기준으로 추가
+//           options.setScope('email profile openid https://www.googleapis.com/auth/user.birthday.read');
+//               // 인스턴스의 함수 호출 - element에 로그인 기능 추가
+//               // GgCustomLogin은 li태그안에 있는 ID, 위에 설정한 options와 아래 성공,실패시 실행하는 함수들
+//           gapi.auth2.getAuthInstance().attachClickHandler('GgCustomLogin', options, onSignIn, onSignInFailure);
+//       })
+//       },
+//       async onSubmit() {
+//         await this.userConfirm(this.user);
+//         let token = sessionStorage.getItem("access-token");
+//         if (this.isLogin) {
+//           await this.getUserInfo(token);
+//           this.$router.push("/");
+//         }
+//       },
+//       onSignIn(googleUser) {
+//         var access_token = googleUser.getAuthResponse().access_token
+//         $.ajax({
+//             // people api를 이용하여 프로필 및 생년월일에 대한 선택동의후 가져온다.
+//           url: 'https://people.googleapis.com/v1/people/me'
+//               // key에 자신의 API 키를 넣습니다.
+//           , data: {personFields:'birthdays', key:'AIzaSyARCvy4W2xIX3UUpK_9dMTpnNcv4hl4yHE', 'access_token': access_token}
+//           , method:'GET'
+//         })
+//         .done(function(e){
+//               //프로필을 가져온다.
+//           var profile = googleUser.getBasicProfile();
+//           console.log(profile)
+//         })
+//         .fail(function(e){
+//           console.log(e);
+//         })
+//       },
+//       onSignInFailure(t){
+//         console.log(t);
+//       }
+    },
+
   };
 </script>
+<!--<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>-->

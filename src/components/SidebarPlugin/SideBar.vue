@@ -140,7 +140,7 @@ export default {
   props: {
     logo: {
       type: String,
-      default: "img/brand/negative.png",
+      default: "img/brand/green.png",
       description: "Sidebar app logo",
     },
     autoClose: {

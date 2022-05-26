@@ -15,7 +15,7 @@
       </b-container>
       <div class="separator separator-bottom separator-skew zindex-100">
         <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
-             xmlns="http://www.w3.org/2000/svg">
+            xmlns="http://www.w3.org/2000/svg">
           <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
         </svg>
       </div>
@@ -48,19 +48,19 @@
                   <base-input alternative
                               class="mb-3"
                               prepend-icon="ni ni-hat-3"
-                              placeholder="Name"
-                              name="Name"
+                              placeholder="ID"
+                              name="userId"
                               :rules="{required: true}"
-                              v-model="model.name">
+                              v-model="user.userId">
                   </base-input>
 
                   <base-input alternative
                               class="mb-3"
-                              prepend-icon="ni ni-email-83"
-                              placeholder="Email"
-                              name="Email"
-                              :rules="{required: true, email: true}"
-                              v-model="model.email">
+                              prepend-icon="ni ni-hat-3"
+                              placeholder="Name"
+                              name="userName"
+                              :rules="{required: true}"
+                              v-model="user.userName">
                   </base-input>
 
                   <base-input alternative
@@ -68,16 +68,44 @@
                               prepend-icon="ni ni-lock-circle-open"
                               placeholder="password"
                               type="password"
-                              name="Password"
+                              name="userPwd"
                               :rules="{required: true, min: 6}"
-                              v-model="model.password">
+                              v-model="user.userPwd">
                   </base-input>
+
+                  <!-- <base-input alternative
+                              class="mb-3"
+                              prepend-icon="ni ni-email-83"
+                              placeholder="Email"
+                              name="Email"
+                              :rules="{required: true, email: true}"
+                              v-model="user.email">
+                  </base-input> -->
+
+                  <base-input alternative
+                              class="mb-3"
+                              prepend-icon="ni ni-hat-3"
+                              placeholder="Address"
+                              name="userAddr"
+                              :rules="{required: true}"
+                              v-model="user.userAddr">
+                  </base-input>
+
+                  <base-input alternative
+                              class="mb-3"
+                              prepend-icon="ni ni-hat-3"
+                              placeholder="Phone Number"
+                              name="userTel"
+                              :rules="{required: true}"
+                              v-model="user.userTel">
+                  </base-input>
+
                   <div class="text-muted font-italic"><small>password strength: <span
                     class="text-success font-weight-700">strong</span></small></div>
                   <b-row class=" my-4">
                     <b-col cols="12">
                       <base-input :rules="{ required: { allowFalse: false } }" name=Privacy Policy>
-                        <b-form-checkbox v-model="model.agree">
+                        <b-form-checkbox v-model="user.agree">
                           <span class="text-muted">I agree with the <a href="#!">Privacy Policy</a></span>
                         </b-form-checkbox>
                       </base-input>
@@ -96,25 +124,34 @@
   </div>
 </template>
 <script>
+import { mapActions } from "vuex";
 
-  export default {
-    name: 'register',
-    data() {
-      return {
-        model: {
-          name: '',
-          email: '',
-          password: '',
-          agree: false
-        }
-      }
+export default {
+  name: 'register',
+  data() {
+    return {
+      user: {
+        userId: '',
+        userName: '',
+        userPwd: '',
+        userAddr: '',
+        userTel: '',
+        agree: false
+      },
+    };
+  },
+  methods: {
+    ...mapActions(["createUser"]),
+    onSubmit() {
+
+        this.registUser();
     },
-    methods: {
-      onSubmit() {
-        // this will be called only after form is valid. You can do an api call here to register users
-      }
+    registUser(){
+      console.log("registUser 호출");
+      this.createUser(this.user);
+      this.$router.push({ name: "login" });
     }
-
-  };
+  }
+};
 </script>
 <style></style>
