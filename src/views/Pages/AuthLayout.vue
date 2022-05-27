@@ -34,7 +34,7 @@
                <i class="ni ni-planet"></i>
                <span class="nav-link-inner--text">Dashboard</span>
            </b-nav-item>
-           <b-nav-item to="/register">
+           <b-nav-item to="/register" >
                <i class="ni ni-circle-08"></i>
                <span class="nav-link-inner--text">Register</span>
            </b-nav-item>
@@ -42,7 +42,7 @@
                <i class="ni ni-key-25"></i>
                <span class="nav-link-inner--text">Login</span>
            </b-nav-item>
-           <b-nav-item to="/profile">
+           <b-nav-item to="/profile" >
                <i class="ni ni-single-02"></i>
                <span class="nav-link-inner--text">Profile</span>
            </b-nav-item>
@@ -91,6 +91,7 @@
 <script>
   import { BaseNav } from '@/components';
   import { ZoomCenterTransition } from 'vue2-transitions';
+  import { mapState } from "vuex";
 
   export default {
     components: {
@@ -115,7 +116,8 @@
     computed: {
       title() {
         return `${this.$route.name} Page`;
-      }
+      },
+      ...mapState(["user"]),
     },
     methods: {
       toggleNavbar() {

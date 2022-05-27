@@ -98,7 +98,7 @@ export default {
       const options = {
         //지도를 생성할 때 필요한 기본 옵션
         center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
-        level: 3, //지도의 레벨(확대, 축소 정도)
+        level: 2, //지도의 레벨(확대, 축소 정도)
       };
       this.map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
       map.setMapTypeId(kakao.maps.MapTypeId.HYBRID);
@@ -118,16 +118,18 @@ export default {
       var geocoder = new kakao.maps.services.Geocoder();
 
       var selectedMarker = null;
-      var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png', // 마커이미지의 주소입니다    
-          imageSize = new kakao.maps.Size(24, 35); // 마커이미지의 크기입니다
-          // imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+      var imageSrc = 'http://t1.daumcdn.net/localimg/localimages/07/2018/pc/img/marker_spot.png',
+          clickImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png', // 마커이미지의 주소입니다    
+          imageSize = new kakao.maps.Size(33, 43), // 마커이미지의 크기입니다
+          overImageSize = new kakao.maps.Size(35, 48); // 마커이미지의 크기입니다
 
       // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-      // var clickImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
-      var clickImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+      var normalImage = new kakao.maps.MarkerImage(imageSrc, imageSize),
+          clickImage = new kakao.maps.MarkerImage(clickImageSrc, imageSize),
+          overImage = new kakao.maps.MarkerImage(imageSrc, overImageSize);
 
-      // 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
-      // var bounds = new kakao.maps.LatLngBounds();    
+
+      // 지도를 재설정할 범위정보를 가지LngBounds();    
       let j = 0;
       this.houses.forEach((item) => {
         if(j==0) {
@@ -141,15 +143,12 @@ export default {
             if (status === kakao.maps.services.Status.OK) {
               var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-              // 마커 이미지 변경
-
               // 결과값으로 받은 위치를 마커로 표시합니다
               var marker = new kakao.maps.Marker({
                   map: this.map,
                   position: coords,
                   title: item.aptName,
                   clickable: true,
-                  // image: markerImage, // 마커이미지 설정
               });
 
               // 인포윈도우로 장소에 대한 설명을 표시합니다
@@ -160,25 +159,28 @@ export default {
               });
 
               // 마커에 mouseover, mouseout, click 이벤트를 등록
-              kakao.maps.event.addListener(marker, "mouseover", () => {infowindow.open(this.map, marker);});
-              kakao.maps.event.addListener(marker, "mouseout", () => {infowindow.close(this.map, marker);});
+              kakao.maps.event.addListener(marker, "mouseover", () => {
+                infowindow.open(this.map, marker);
+                if (!selectedMarker || selectedMarker !== marker) {
+                  marker.setImage(overImage);
+                }
+              
+              });
+              kakao.maps.event.addListener(marker, "mouseout", () => {
+                infowindow.close(this.map, marker);
+                if (!selectedMarker || selectedMarker !== marker) {
+                  marker.setImage(normalImage);
+                }
+              });
 
               // 마커에 click 이벤트를 등록합니다
               kakao.maps.event.addListener(marker, 'click', () => {
                 this.showAptDeal(item.id);
-                // 클릭된 마커가 없고, click 마커가 클릭된 마커가 아니면
-                // 마커의 이미지를 클릭 이미지로 변경합니다
                 if (!selectedMarker || selectedMarker !== marker) {
-
-                    // 클릭된 마커 객체가 null이 아니면
-                    // 클릭된 마커의 이미지를 기본 이미지로 변경하고
                     !!selectedMarker && selectedMarker.setImage(selectedMarker.normalImage);
-
-                    // 현재 클릭된 마커의 이미지는 클릭 이미지로 변경합니다
                     marker.setImage(clickImage);
                 }
 
-                // 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
                 selectedMarker = marker;
               });
 

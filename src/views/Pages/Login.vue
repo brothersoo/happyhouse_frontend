@@ -82,7 +82,7 @@
             </b-col>
           </b-row>
         </b-col>
-      </b-row>
+      </b-row> 
     </b-container>
   </div> 
 </template>
@@ -108,32 +108,11 @@ import { mapState, mapActions } from "vuex";
         await this.userConfirm(this.user);
         let token = sessionStorage.getItem("access-token");
         if (this.isLogin) {
-          await this.getUserInfo(this.token);
+          await this.getUserInfo(token);
           this.$router.push({ name: "dashboard" });
         }
       }
-      // onSubmit(){
-      //   let saveData = {};
-      //   saveData.userId = this.useiId;
-      //   saveData.userPwd = this.userPassword;
 
-      //   try {
-      //     http
-      //       .post("/login", JSON.stringify(saveData), {
-      //         headers: {
-      //           "Content-Type": `application/json`,
-      //         },
-      //       })
-      //       .then((res) => {
-      //         if (res.status === 200) {
-      //           this.$store.commit("SET_LOGIN", res.data);
-      //           this.$router.push("/");
-      //         }
-      //       });
-      //   } catch (error) {
-      //     console.error(error);
-      //   }
-      // }
 //       init() {
 //         gapi.load('auth2', () => {
 //           gapi.auth2.init();

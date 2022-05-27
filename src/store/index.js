@@ -65,13 +65,7 @@ export default new Vuex.Store({
     },
     deals: [],
     users: [],
-    user: {
-      userId: '',
-      userPwd: '',
-      userName: '',
-      userAddr: '',
-      userTel: '',
-    },
+    user: null,
     isLogin: false,
     isLoginError: false,
     userInfo: null,
@@ -423,16 +417,13 @@ export default new Vuex.Store({
     async userConfirm({ commit }, user) {
       console.log("userConfirm 호출");
       await http
-        .post("user/login", {
-          userId: user.userId,
-          userName: user.userName,
-        }
-        )
+        .post("user/login", JSON.stringify(user))
         .then((response) => {
-          if (response.status === 200) {
+          if (response.data.message === "success") {
             let token = response.data["access-token"];
             console.log("로그인 성공");
             console.log(response);
+            console.log()
             commit("SET_IS_LOGIN", true);
             commit("SET_IS_LOGIN_ERROR", false);
             sessionStorage.setItem("access-token", token);
@@ -444,17 +435,19 @@ export default new Vuex.Store({
         .catch((err) => {
           console.error(err);
         })
-      }
     },
-    getUserInfo({ commit }, token) {
+    
+    async getUserInfo({ commit }, token) {
       console.log("getUserInfo 호출");
       let decode_token = jwt_decode(token);
-      http
-        .get(`user/user/${decode_token.userId}`, {
-            userId: decode_token.userId
+      console.log(decode_token);
+      http.defaults.headers["access-token"] = sessionStorage.getItem("access-token");
+      await http
+        .get(`user/info/${decode_token.userid}`, {
+          userId: decode_token.userid
         })
         .then((response) => {
-          if (response.status === 200) {
+          if (response.data.message === "success") {
             console.log(response.data);
             // commit("SET_LOING_USER", response.data);
             commit("SET_USER_INFO", response.data.userInfo);
@@ -487,21 +480,6 @@ export default new Vuex.Store({
           console.error(err);
         })
     },
-    // getUserInfo({ commit }, token) {
-    //   let decode_token = jwt_decode(token);
-    //   findById(
-    //     decode_token.userId,
-    //     (response) => {
-    //       if (response.data.message === "success") {
-    //         commit("SET_USER_INFO", response.data.user);
-    //       } else {
-    //         console.log("유저 정보 없음!!");
-    //       }
-    //     },
-    //     (error) => {
-    //       console.log(error);
-    //     },
-    //   );
-    // }
+    
   }
-);
+});
